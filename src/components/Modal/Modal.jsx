@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import css from './Modal.module.css';
-
+import PropTypes from 'prop-types';
 const modalRoot = document.querySelector('#modal-root');
 
 export const Modal = ({ children, closeModal }) => {
@@ -14,10 +14,10 @@ export const Modal = ({ children, closeModal }) => {
       }
     };
 
-    // console.log("1");
+    
     window.addEventListener('keydown', keyDown);
     return () => {
-      // console.log('2');
+      
       window.removeEventListener('keydown', keyDown);
     };
   }, [closeModal]);
@@ -34,4 +34,8 @@ export const Modal = ({ children, closeModal }) => {
     </div>,
     modalRoot
   );
+};
+
+Modal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
 };

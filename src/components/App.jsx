@@ -8,19 +8,7 @@ import { Loader } from 'components/Loader/Loader';
 import { Modal } from './Modal/Modal';
 
 export const App =()=> {
-  // state = {
-  //   search: '',
-  //   images: [],
-  //   page: 1,
-  //   total: 1,
-  //   loading: false,
-  //   error: null,
-  //   showModal: false,
-  //   empty: false,
-  //   largeImageURL: null, 
-  //   alt: null
-  // };
-
+  
   const [search, setSearch] = useState('');
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
@@ -33,19 +21,9 @@ export const App =()=> {
   const [alt, setAlt] = useState(null);
 
   useEffect(() => {
-    console.log("1");
     if (!search) {return}
     getFunc(search, page);
   },[search, page])
-
-  // componentDidUpdate(_, PrevState) {
-  //   if (
-  //     PrevState.search !== this.state.search ||
-  //     PrevState.page !== this.state.page
-  //   ) {
-  //     this.getFunc(this.state.search, this.state.page);
-  //   }
-  // }
 
   const getFunc = (text, page) => {
     setLoading(true);
@@ -57,11 +35,7 @@ export const App =()=> {
         }
         setImages(state => [...state, ...data.hits]);
         setTotal(data.total);
-        // setState(prevSt => ({
-        //   page: prevSt.page,
-        //   images: [...prevSt.images, ...data.hits],
-        //   total: data.total,
-        // }));
+      
       })
       .catch(err => {
         setError(err.message);
@@ -79,9 +53,7 @@ export const App =()=> {
     setShowModal(state => !state);
     setLargeImageURL(largeImageURL);
     setAlt(alt);
-    // this.setState(({ showModal }) => {
-    //   return { showModal: !showModal, largeImageURL, alt };
-    // });
+  
   };
 
   const handleSubmit = search => {
@@ -92,22 +64,13 @@ export const App =()=> {
     setLoading(false);
     setError(null);
     setEmpty(false);
-    // this.setState({
-    //   search,
-    //   images: [],
-    //   page: 1,
-    //   total: 1,
-    //   loading: false,
-    //   error: null,
-    //   empty: false,
-    // });
+   
   };
 
   const closeModal = () => {
     setShowModal(state=> !state);
   };
 
-    // const { error, loading, images, total, page } = this.state;
     return (
       <div>
         <Toaster

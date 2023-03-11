@@ -2,11 +2,10 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { BiSearch } from 'react-icons/bi';
 import css from './Searchbar.module.css'
+import PropTypes from 'prop-types';
 
 export const Searchbar = ({ handleSubmit }) => {
-  // state = {
-  //   search: '',
-  // };
+
   const [search, setSearch] = useState('');
 
   const onChangeInput = evt => {
@@ -31,9 +30,7 @@ export const Searchbar = ({ handleSubmit }) => {
         className={css.Form}
       >
         <button type="submit" className={css.Button}>
-          {/* <span className={css.buttonLabel}> */}
           <BiSearch size="20" />
-          {/* </span> */}
         </button>
 
         <input
@@ -49,4 +46,8 @@ export const Searchbar = ({ handleSubmit }) => {
       </form>
     </header>
   );
+};
+
+Searchbar.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
 };

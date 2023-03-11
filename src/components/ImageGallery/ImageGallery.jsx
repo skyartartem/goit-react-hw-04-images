@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css';
 
 export const ImageGallery = ({ images, togleModal }) => {
-  // const { id, webformatURL, largeImageURL } = images;
   return (
     <>
       <ul className={css.gallery}>
@@ -14,6 +13,13 @@ export const ImageGallery = ({ images, togleModal }) => {
 };
 
 ImageGallery.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.object).isRequired,
-  togleModal: PropTypes.func.isRequired
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  togleModal: PropTypes.func.isRequired,
 };
