@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { getSearch } from 'api/getSearch';
@@ -7,81 +7,107 @@ import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 import { Modal } from './Modal/Modal';
 
-export class App extends Component {
-  state = {
-    search: '',
-    images: [],
-    page: 1,
-    total: 1,
-    loading: false,
-    error: null,
-    showModal: false,
-    empty: false,
-  };
+export const App =()=> {
+  // state = {
+  //   search: '',
+  //   images: [],
+  //   page: 1,
+  //   total: 1,
+  //   loading: false,
+  //   error: null,
+  //   showModal: false,
+  //   empty: false,
+  //   largeImageURL: null, 
+  //   alt: null
+  // };
 
-  componentDidUpdate(_, PrevState) {
-    if (
-      PrevState.search !== this.state.search ||
-      PrevState.page !== this.state.page
-    ) {
-      this.getFunc(this.state.search, this.state.page);
-    }
-  }
+  const [search, setSearch] = useState('');
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [empty, setEmpty] = useState(false);
+  const [largeImageURL, setLargeImageURL] = useState(null);
+  const [alt, setAlt] = useState(null);
 
-  getFunc = (text, page) => {
-    this.setState({ loading: true });
+  useEffect(() => {
+    console.log("1");
+    if (!search) {return}
+    getFunc(search, page);
+  },[search, page])
+
+  // componentDidUpdate(_, PrevState) {
+  //   if (
+  //     PrevState.search !== this.state.search ||
+  //     PrevState.page !== this.state.page
+  //   ) {
+  //     this.getFunc(this.state.search, this.state.page);
+  //   }
+  // }
+
+  const getFunc = (text, page) => {
+    setLoading(true);
     getSearch(text, page)
       .then(resp => resp.json())
       .then(data => {
         if (data.hits.length === 0) {
-          this.setState({ empty: true });
+          setEmpty(true);
         }
-        this.setState(prevSt => ({
-          page: prevSt.page,
-          images: [...prevSt.images, ...data.hits],
-          total: data.total,
-        }));
+        setImages(state => [...state, ...data.hits]);
+        setTotal(data.total);
+        // setState(prevSt => ({
+        //   page: prevSt.page,
+        //   images: [...prevSt.images, ...data.hits],
+        //   total: data.total,
+        // }));
       })
-      .catch(error => {
-        this.setState({ error: error.message });
+      .catch(err => {
+        setError(err.message);
       })
       .finally(() => {
-        this.setState({ loading: false });
+        setLoading(false);
       });
   };
 
-  clickLoad = () => {
-    this.setState(prevSt => ({
-      page: prevSt.page + 1,
-    }));
+  const clickLoad = () => {
+    setPage(state => state+1);
   };
 
-  openModal = (largeImageURL, alt) => {
-    this.setState(({ showModal }) => {
-      return { showModal: !showModal, largeImageURL, alt };
-    });
+  const openModal = (largeImageURL, alt) => {
+    setShowModal(state => !state);
+    setLargeImageURL(largeImageURL);
+    setAlt(alt);
+    // this.setState(({ showModal }) => {
+    //   return { showModal: !showModal, largeImageURL, alt };
+    // });
   };
 
-  handleSubmit = search => {
-    this.setState({
-      search,
-      images: [],
-      page: 1,
-      total: 1,
-      loading: false,
-      error: null,
-      empty: false,
-    });
+  const handleSubmit = search => {
+    setSearch(search);
+    setImages([]);
+    setPage(1);
+    setTotal(0);
+    setLoading(false);
+    setError(null);
+    setEmpty(false);
+    // this.setState({
+    //   search,
+    //   images: [],
+    //   page: 1,
+    //   total: 1,
+    //   loading: false,
+    //   error: null,
+    //   empty: false,
+    // });
   };
 
-  closeModal = () => {
-    this.setState(({ showModal }) => {
-      return { showModal: !showModal };
-    });
+  const closeModal = () => {
+    setShowModal(state=> !state);
   };
 
-  render() {
-    const { error, loading, images, total, page } = this.state;
+    // const { error, loading, images, total, page } = this.state;
     return (
       <div>
         <Toaster
@@ -89,26 +115,26 @@ export class App extends Component {
             duration: 1500,
           }}
         />
-        <Searchbar handleSubmit={this.handleSubmit} />
+        <Searchbar handleSubmit={handleSubmit} />
         {error && (
           <h2 style={{ textAlign: 'center' }}>
             Something went wrong: ({error})!
           </h2>
         )}
-        <ImageGallery togleModal={this.openModal} images={images} />
+        <ImageGallery togleModal={openModal} images={images} />
         {loading && <Loader />}
-        {this.state.empty && (
+        {empty && (
           <h2 style={{ textAlign: 'center' }}>
             Sorry. There are no images ... 😭
           </h2>
         )}
-        {total / 12 > page && <Button clickLoad={this.clickLoad} />}
-        {this.state.showModal && (
-          <Modal closeModal={this.closeModal}>
-            <img src={this.state.largeImageURL} alt={this.state.alt} />
+        {total / 12 > page && <Button clickLoad={clickLoad} />}
+        {showModal && (
+          <Modal closeModal={closeModal}>
+            <img src={largeImageURL} alt={alt} />
           </Modal>
         )}
       </div>
     );
-  }
+  
 }
